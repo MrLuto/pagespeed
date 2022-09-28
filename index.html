@@ -7,8 +7,15 @@
 		</title>
 		<script src="pureknob.js" type="text/javascript"></script>
 		<script type="text/javascript">
+            async function fetchAsync(url) {
+                let response = await fetch(url);
+                let data = await response.json();
+                return data;
+            }
 
 			function ready() {
+                let parameters = new URLSearchParams( window.location.search );
+                console.log(parameters.get("url"));
 				const knob = pureknob.createKnob(300, 300);
 				knob.setProperty('angleStart', -0.75 * Math.PI);
 				knob.setProperty('angleEnd', 0.75 * Math.PI);
@@ -16,7 +23,14 @@
 				knob.setProperty('trackWidth', 0.4);
 				knob.setProperty('valMin', 0);
 				knob.setProperty('valMax', 100);
-				knob.setValue(50);
+                if (parameters.get("url") == null){
+                    knob.setValue("no url has been given");
+                } else {
+                    knob.setValue(0);
+                    let pagespeedtest = fetchAsync("https://pagespeedonline.googleapis.com/pagespeedonline/v5/runPagespeed?url=" + parameters.get("url") + "%2F&strategy=DESKTOP&key=AIzaSyDEs4_tFYQf8GCnwRADKu9oTxgYyxdoHa8")
+                    console.log(pagespeedtest);
+                }
+				
 
 				const node = knob.node();
 				const elem = document.getElementById('some_element');
